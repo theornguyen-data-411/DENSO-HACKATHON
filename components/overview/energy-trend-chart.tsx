@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
@@ -9,15 +9,88 @@ import { BarChart3 } from "lucide-react"
 
 type TimeRange = "24H" | "7D" | "30D"
 
+// Seeded random function for consistent data
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
+}
+
 export function EnergyTrendChart() {
   const data = useOverviewData()
   const [timeRange, setTimeRange] = useState<TimeRange>("24H")
 
+  // Generate realistic temperature data
+  const chartData = useMemo(() => {
+    if (timeRange === "24H") {
+      // Generate hourly temperature data for 24 hours
+      return Array.from({ length: 24 }, (_, i) => {
+        const hour = i
+        let baseTemp = 50 // Base temperature
+        
+        // Temperature patterns throughout the day
+        if (hour >= 6 && hour <= 8) {
+          baseTemp = 60 // Morning
+        } else if (hour >= 9 && hour <= 17) {
+          baseTemp = 70 // Business hours (higher activity)
+        } else if (hour >= 18 && hour <= 21) {
+          baseTemp = 75 // Evening peak
+        } else if (hour >= 22 || hour <= 5) {
+          baseTemp = 45 // Night hours (lower activity)
+        }
+        
+        // Add some randomness
+        const randomVariation = (seededRandom(i + 1000) - 0.5) * 20
+        const temperature = Math.max(20, Math.min(90, baseTemp + randomVariation))
+        
+        return {
+          time: `${hour.toString().padStart(2, "0")}:00`,
+          consumption: Math.round(temperature * 10) / 10, // Round to 1 decimal
+        }
+      })
+    } else if (timeRange === "7D") {
+      // Generate daily temperature data for 7 days
+      const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+      return days.map((day, index) => {
+        let baseTemp = 60
+        
+        // Weekend pattern (lower temperatures)
+        if (index >= 5) {
+          baseTemp = 50
+        }
+        
+        const randomVariation = (seededRandom(index + 2000) - 0.5) * 15
+        const temperature = Math.max(30, Math.min(85, baseTemp + randomVariation))
+        
+        return {
+          date: day,
+          consumption: Math.round(temperature * 10) / 10,
+        }
+      })
+    } else {
+      // Generate monthly temperature data for 30 days
+      return Array.from({ length: 30 }, (_, i) => {
+        const day = i + 1
+        let baseTemp = 55
+        
+        // Weekend pattern
+        if (day % 7 === 0 || day % 7 === 6) {
+          baseTemp = 45
+        }
+        
+        const randomVariation = (seededRandom(day + 3000) - 0.5) * 20
+        const temperature = Math.max(25, Math.min(80, baseTemp + randomVariation))
+        
+        return {
+          date: `${day}/12`,
+          consumption: Math.round(temperature * 10) / 10,
+        }
+      })
+    }
+  }, [timeRange])
+
   if (!data) {
     return <div className="h-[400px] bg-[#1B1B1B] border border-[#2A2A2A] rounded-lg animate-pulse" />
   }
-
-  const chartData = data.energyTrend[timeRange.toLowerCase()]
 
   return (
     <Card className="bg-[#1B1B1B] border-[#2A2A2A] text-[#EDEDED]">
@@ -29,7 +102,7 @@ export function EnergyTrendChart() {
               Energy Consumption
             </CardTitle>
             <CardDescription className="text-[#9A9A9A] mt-1">
-              Total consumption across selected time period.
+              Temperature readings across selected time period.
             </CardDescription>
           </div>
           <div className="flex items-center gap-2 bg-[#0E0E0E] p-1 rounded-lg w-fit">
@@ -51,16 +124,16 @@ export function EnergyTrendChart() {
           {/* Peak, Avg, Min Stats */}
           <div className="flex items-center gap-4 text-sm">
             <div className="bg-[#0E0E0E]/50 px-3 py-2 rounded-lg text-center">
-              <div className="text-lg font-bold text-[#FF6B00]">327</div>
-              <div className="text-xs text-[#9A9A9A]">Peak (kWh)</div>
+              <div className="text-lg font-bold text-[#FF6B00]">85</div>
+              <div className="text-xs text-[#9A9A9A]">Peak (°C)</div>
             </div>
             <div className="bg-[#0E0E0E]/50 px-3 py-2 rounded-lg text-center">
-              <div className="text-lg font-bold text-[#EDEDED]">168</div>
-              <div className="text-xs text-[#9A9A9A]">Avg (kWh)</div>
+              <div className="text-lg font-bold text-[#EDEDED]">65</div>
+              <div className="text-xs text-[#9A9A9A]">Avg (°C)</div>
             </div>
             <div className="bg-[#0E0E0E]/50 px-3 py-2 rounded-lg text-center">
-              <div className="text-lg font-bold text-green-400">109</div>
-              <div className="text-xs text-[#9A9A9A]">Min (kWh)</div>
+              <div className="text-lg font-bold text-green-400">45</div>
+              <div className="text-xs text-[#9A9A9A]">Min (°C)</div>
             </div>
           </div>
         </div>
@@ -79,8 +152,8 @@ export function EnergyTrendChart() {
               tick={{ fill: "#9A9A9A", fontSize: 10 }}
               tickLine={false}
               axisLine={false}
-              unit="kWh"
-              domain={["dataMin - 100", "dataMax + 100"]}
+              unit="°C"
+              domain={["dataMin - 10", "dataMax + 10"]}
             />
             <Tooltip
               cursor={{ fill: "hsl(var(--accent))", opacity: 0.1 }}
@@ -91,7 +164,7 @@ export function EnergyTrendChart() {
               }}
               itemStyle={{ color: "hsl(var(--chart-1))" }}
               labelStyle={{ color: "#9A9A9A" }}
-              formatter={(value) => [`${(value as number).toLocaleString()} kWh`, "Consumption"]}
+              formatter={(value) => [`${(value as number).toLocaleString()}°C`, "Temperature"]}
             />
             <Bar dataKey="consumption" fill="#000000" radius={[4, 4, 0, 0]} strokeWidth={0} />
           </BarChart>

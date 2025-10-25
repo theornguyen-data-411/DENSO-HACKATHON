@@ -47,32 +47,32 @@ export function EnergyHeatmap() {
     const amrIds = Array.from({ length: 21 }, (_, i) => i.toString().padStart(2, "0")) // 00-20
     const heatmapData: HeatmapCell[] = []
 
-    // Generate realistic alert patterns for AMR devices
+    // Generate realistic temperature patterns for AMR devices
     days.forEach((day, dayIndex) => {
       amrIds.forEach((amrId, amrIndex) => {
-        let baseAlerts = 0
+        let baseTemp = 0
 
-        // Weekend pattern (lower alerts)
+        // Weekend pattern (lower temperatures)
         const isWeekend = dayIndex >= 5
         if (isWeekend) {
-          baseAlerts = Math.floor(seededRandom(dayIndex * 21 + amrIndex + 1000) * 3)
+          baseTemp = Math.floor(seededRandom(dayIndex * 21 + amrIndex + 1000) * 30) + 20
         } else {
-          baseAlerts = Math.floor(seededRandom(dayIndex * 21 + amrIndex + 2000) * 8)
+          baseTemp = Math.floor(seededRandom(dayIndex * 21 + amrIndex + 2000) * 60) + 30
         }
 
-        // Some AMRs have higher alert rates (simulate problematic devices)
+        // Some AMRs have higher temperatures (simulate problematic devices)
         if (amrIndex % 7 === 0) {
-          baseAlerts = Math.floor(baseAlerts * 1.5)
+          baseTemp = Math.floor(baseTemp * 1.2)
         }
 
         // Add some randomness
-        const randomVariation = Math.floor(seededRandom(dayIndex * 21 + amrIndex + 3000) * 4)
-        const alertCount = Math.max(0, baseAlerts + randomVariation)
+        const randomVariation = Math.floor(seededRandom(dayIndex * 21 + amrIndex + 3000) * 20)
+        const temperature = Math.max(0, Math.min(100, baseTemp + randomVariation))
 
         heatmapData.push({
           day,
           amrId,
-          alertCount,
+          alertCount: temperature,
           intensity: 0, // Will be calculated after all values are generated
         })
       })
@@ -156,7 +156,7 @@ export function EnergyHeatmap() {
       >
         {tooltip.day} AMR-{tooltip.amrId}
         <br />
-        {tooltip.alertCount} alerts
+        {tooltip.alertCount}°C
         {/* Arrow pointing down */}
         <div
           className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0"
@@ -182,7 +182,7 @@ export function EnergyHeatmap() {
                 Overheat Heatmap
               </CardTitle>
               <CardDescription className="text-[#9A9A9A] mt-1">
-                Alert patterns by AMR device and day
+                Temperature patterns by AMR device and day
               </CardDescription>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -191,8 +191,8 @@ export function EnergyHeatmap() {
                 <div className="text-xs text-[#9A9A9A]">Weekday Avg</div>
               </div>
               <div className="bg-[#0E0E0E]/50 px-3 py-2 rounded-lg text-center">
-                <div className="text-lg font-bold text-[#EDEDED]">{insights.totalAlerts}</div>
-                <div className="text-xs text-[#9A9A9A]">Total Alerts</div>
+                <div className="text-lg font-bold text-[#EDEDED]">95</div>
+                <div className="text-xs text-[#9A9A9A]">Max Temp</div>
               </div>
             </div>
           </div>
@@ -263,7 +263,7 @@ export function EnergyHeatmap() {
             <div className="flex items-start gap-2 p-2 bg-[#0E0E0E]/30 rounded-lg">
             <TrendingUp className="h-3 w-3 text-[#FF6B00] mt-0.5 flex-shrink-0" />
             <div className="text-xs">
-              <div className="font-medium text-[#EDEDED]">Alert Pattern</div>
+              <div className="font-medium text-[#EDEDED]">Temperature Pattern</div>
               <div className="text-[#9A9A9A] mt-1">
                 Weekend: {((insights.weekendAvg / insights.weekdayAvg - 1) * 100).toFixed(0)}%
                 {insights.weekendAvg > insights.weekdayAvg ? " higher" : " lower"} • AMR devices: 00-20

@@ -23,52 +23,50 @@ export function OverviewKpiSection() {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <UnifiedKpiCard
         title="Max Temperature (Today)"
-        value={kpis.totalConsumption.value.toLocaleString()}
-        unit="kWh"
+        value="85"
+        unit="°C"
         icon={<Zap />}
         emphasis="primary"
         trend={{
-          direction: kpis.totalConsumption.trend >= 0 ? "up" : "down",
-          percentage: `${Math.abs(kpis.totalConsumption.trend).toFixed(1)}%`,
+          direction: "up",
+          percentage: "2.1%",
           period: "vs yesterday",
         }}
       />
       <UnifiedKpiCard
         title="Overheat Events (Today)"
-        value={kpis.peakDemand.value.toLocaleString()}
-        unit="kW"
+        value="3"
+        unit="events"
         icon={<TrendingUp />}
         emphasis="secondary"
         trend={{
-          direction: kpis.peakDemand.trend >= 0 ? "up" : "down",
-          percentage: `${Math.abs(kpis.peakDemand.trend).toFixed(1)}%`,
+          direction: "down",
+          percentage: "0.9%",
           period: "vs yesterday",
         }}
       />
       <UnifiedKpiCard
         title="Average Operating Temperature (Today)"
-        value={`$${kpis.energyCost.value.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}`}
+        value="65.2"
+        unit="°C"
         icon={<DollarSign />}
         emphasis="secondary"
         trend={{
-          direction: kpis.energyCost.trend >= 0 ? "up" : "down",
-          percentage: `${Math.abs(kpis.energyCost.trend).toFixed(1)}%`,
+          direction: "up",
+          percentage: "1.5%",
           period: "vs yesterday",
         }}
       />
       <UnifiedKpiCard
         title="AMRs Online (Today)"
-        value={kpis.co2Emissions.value.toLocaleString()}
-        unit="kg"
+        value="24"
+        unit="devices"
         icon={<Leaf />}
         emphasis="tertiary"
         trend={{
-          direction: kpis.co2Emissions.trend >= 0 ? "up" : "down",
-          percentage: `${Math.abs(kpis.co2Emissions.trend).toFixed(1)}%`,
-          period: "vs yesterday",
+          direction: "up",
+          percentage: "100%",
+          period: "operational",
         }}
       />
     </div>
