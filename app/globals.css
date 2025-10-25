@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: 0 0% 100%;
+  --color-foreground: 240 10% 3.9%;
+  --color-card: 0 0% 100%;
+  --color-card-foreground: 240 10% 3.9%;
+  --color-popover: 0 0% 100%;
+  --color-popover-foreground: 240 10% 3.9%;
+  --color-primary: 240 5.9% 10%;
+  --color-primary-foreground: 0 0% 98%;
+  --color-secondary: 240 4.8% 95.9%;
+  --color-secondary-foreground: 240 5.9% 10%;
+  --color-muted: 240 4.8% 95.9%;
+  --color-muted-foreground: 240 3.8% 46.1%;
+  --color-accent: 240 4.8% 95.9%;
+  --color-accent-foreground: 240 5.9% 10%;
+  --color-destructive: 0 84.2% 60.2%;
+  --color-destructive-foreground: 0 0% 98%;
+  --color-border: 240 5.9% 90%;
+  --color-input: 240 5.9% 90%;
+  --color-ring: 240 10% 3.9%;
+  --color-chart-1: 12 76% 61%;
+  --color-chart-2: 173 58% 39%;
+  --color-chart-3: 197 37% 24%;
+  --color-chart-4: 43 74% 66%;
+  --color-chart-5: 27 87% 67%;
+  --radius: 0.5rem;
+
+  /* Custom dashboard colors */
+  --color-sidebar-background: 27 9% 11%;
+  --color-sidebar-foreground: 0 0% 93%;
+  --color-sidebar-primary: 0 0% 98%;
+  --color-sidebar-primary-foreground: 240 5.9% 10%;
+  --color-sidebar-accent: 24 100% 50%;
+  --color-sidebar-accent-foreground: 0 0% 0%;
+  --color-sidebar-border: 0 0% 16%;
+  --color-sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: 240 10% 3.9%;
+    --color-foreground: 0 0% 98%;
+    --color-card: 240 10% 3.9%;
+    --color-card-foreground: 0 0% 98%;
+    --color-popover: 240 10% 3.9%;
+    --color-popover-foreground: 0 0% 98%;
+    --color-primary: 0 0% 98%;
+    --color-primary-foreground: 240 5.9% 10%;
+    --color-secondary: 240 3.7% 15.9%;
+    --color-secondary-foreground: 0 0% 98%;
+    --color-muted: 240 3.7% 15.9%;
+    --color-muted-foreground: 240 5% 64.9%;
+    --color-accent: 240 3.7% 15.9%;
+    --color-accent-foreground: 0 0% 98%;
+    --color-destructive: 0 62.8% 30.6%;
+    --color-destructive-foreground: 0 0% 98%;
+    --color-border: 240 3.7% 15.9%;
+    --color-input: 240 3.7% 15.9%;
+    --color-ring: 240 4.9% 83.9%;
+    --color-chart-1: 220 70% 50%;
+    --color-chart-2: 160 60% 45%;
+    --color-chart-3: 30 80% 55%;
+    --color-chart-4: 280 65% 60%;
+    --color-chart-5: 340 75% 55%;
+  }
+}
+
+.dark {
+  --color-background: 240 10% 3.9%;
+  --color-foreground: 0 0% 98%;
+  --color-card: 240 10% 3.9%;
+  --color-card-foreground: 0 0% 98%;
+  --color-popover: 240 10% 3.9%;
+  --color-popover-foreground: 0 0% 98%;
+  --color-primary: 0 0% 98%;
+  --color-primary-foreground: 240 5.9% 10%;
+  --color-secondary: 240 3.7% 15.9%;
+  --color-secondary-foreground: 0 0% 98%;
+  --color-muted: 240 3.7% 15.9%;
+  --color-muted-foreground: 240 5% 64.9%;
+  --color-accent: 240 3.7% 15.9%;
+  --color-accent-foreground: 0 0% 98%;
+  --color-destructive: 0 62.8% 30.6%;
+  --color-destructive-foreground: 0 0% 98%;
+  --color-border: 240 3.7% 15.9%;
+  --color-input: 240 3.7% 15.9%;
+  --color-ring: 240 4.9% 83.9%;
+  --color-chart-1: 220 70% 50%;
+  --color-chart-2: 160 60% 45%;
+  --color-chart-3: 30 80% 55%;
+  --color-chart-4: 280 65% 60%;
+  --color-chart-5: 340 75% 55%;
+}
+
+* {
+  border-color: hsl(var(--color-border));
+}
+
+body {
+  background-color: hsl(var(--color-background));
+  color: hsl(var(--color-foreground));
+}
+
+/* react-grid-layout styles */
+.react-grid-layout {
+  position: relative;
+  transition: height 200ms ease;
+}
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+.react-grid-item > div {
+  width: 100%;
+  height: 100%;
+}
+.react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+.react-grid-item.resizing {
+  z-index: 1;
+  will-change: width, height;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: hsl(var(--sidebar-accent));
+  opacity: 0.2;
+  transition-duration: 100ms;
+  z-index: 2;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  border-radius: 0.5rem;
+}
+
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+  padding: 0 3px 3px 0;
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid hsla(0, 0%, 100%, 0.4);
+  border-bottom: 2px solid hsla(0, 0%, 100%, 0.4);
+}
